@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>College Facility Booking system — Facility Booking &amp; Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon-deep:#4E151C;
+    --maroon:#6E1F27;
+    --maroon-soft:#8A2E37;
+    --cream:#F5EEDF;
+    --ivory:#FBF8F0;
+    --ink:#2A1A15;
+    --ink-soft:#77675C;
+    --brass:#A9824C;
+    --brass-soft:#D8C6A0;
+    --sage:#5C7856;
+    --sage-bg:#E7EEE2;
+    --rust:#A03E2E;
+    --rust-bg:#F5E4DF;
+    --amber:#AD7F35;
+    --amber-bg:#F3E7CD;
+    --line:rgba(78,21,28,0.16);
+    --shadow:0 1px 0 rgba(42,26,21,0.04);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    color:var(--maroon-deep);
+    margin:0;
+  }
+  button{font-family:inherit;cursor:pointer;}
+  input,select,textarea{font-family:inherit;}
+  a{color:inherit;}
+  ::selection{background:var(--brass-soft);}
+  :focus-visible{outline:2px solid var(--maroon);outline-offset:2px;}
+
+  /* ---------- Login ---------- */
+  #loginScreen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(110,31,39,0.07), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(169,130,76,0.10), transparent 40%),
+      var(--cream);
+    padding:24px;
+  }
+  .login-card{
+    width:100%;
+    max-width:400px;
+    background:var(--ivory);
+    border:1px solid var(--line);
+    padding:40px 36px 32px;
+    position:relative;
+  }
+  .login-card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:4px;
+    background:var(--maroon-deep);
+  }
+  .seal{
+    width:56px;height:56px;
+    border-radius:50%;
+    border:1.5px solid var(--maroon-deep);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 18px;
+    position:relative;
+  }
+  .seal::after{
+    content:"";
+    position:absolute;
+    inset:5px;
+    border:1px solid var(--brass);
+    border-radius:50%;
+  }
+  .seal span{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:16px;
+    color:var(--maroon-deep);
+    letter-spacing:0.5px;
+  }
+  .login-card h1{font-size:24px;text-align:center;letter-spacing:0.2px;}
+  .login-sub{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13.5px;
+    margin:6px 0 28px;
+  }
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--maroon-deep);
+    margin-bottom:6px;
+  }
+  .field input, .field select{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    background:#fff;
+    font-size:14px;
+    color:var(--ink);
+  }
+  .field input:focus, .field select:focus{border-color:var(--maroon-soft);}
+  .role-toggle{
+    display:flex;
+    border:1px solid var(--line);
+  }
+  .role-toggle button{
+    flex:1;
+    padding:10px 8px;
+    background:#fff;
+    border:none;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    border-right:1px solid var(--line);
+  }
+  .role-toggle button:last-child{border-right:none;}
+  .role-toggle button.active{
+    background:var(--maroon-deep);
+    color:var(--ivory);
+  }
+  .btn-primary{
+    width:100%;
+    padding:12px;
+    background:var(--maroon-deep);
+    color:var(--ivory);
+    border:none;
+    font-size:14.5px;
+    font-weight:600;
+    letter-spacing:0.2px;
+    margin-top:8px;
+  }
+  .btn-primary:hover{background:var(--maroon);}
+  .login-note{
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:16px;
+  }
+
+  /* ---------- App shell ---------- */
+  #app{display:none;min-height:100vh;}
+  #app.active{display:flex;}
+  .sidebar{
+    width:220px;
+    flex-shrink:0;
+    background:var(--maroon-deep);
+    color:var(--ivory);
+    display:flex;
+    flex-direction:column;
+    padding:22px 0;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:0 20px 22px;
+    border-bottom:1px solid rgba(251,248,240,0.14);
+    margin-bottom:18px;
+  }
+  .brand .seal{width:34px;height:34px;border-color:var(--brass-soft);margin:0;}
+  .brand .seal span{color:var(--ivory);font-size:12px;}
+  .brand-name{font-family:'Fraunces',serif;font-size:16.5px;font-weight:600;line-height:1.15;}
+  .brand-name small{display:block;font-family:'Inter',sans-serif;font-weight:400;font-size:10.5px;color:var(--brass-soft);letter-spacing:0.4px;margin-top:2px;}
+  .nav-group{padding:0 12px;margin-bottom:6px;}
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    background:none;
+    border:none;
+    color:rgba(251,248,240,0.82);
+    padding:10px 12px;
+    font-size:13.8px;
+    font-weight:500;
+    text-align:left;
+    border-left:2px solid transparent;
+  }
+  .nav-item svg{flex-shrink:0;opacity:0.85;}
+  .nav-item:hover{background:rgba(251,248,240,0.06);}
+  .nav-item.active{
+    background:rgba(251,248,240,0.08);
+    border-left-color:var(--brass-soft);
+    color:var(--ivory);
+  }
+  .nav-badge{
+    margin-left:auto;
+    background:var(--brass);
+    color:var(--maroon-deep);
+    font-size:10.5px;
+    font-weight:700;
+    padding:1px 6px;
+    border-radius:9px;
+  }
+  .sidebar-foot{
+    margin-top:auto;
+    padding:14px 20px 0;
+    border-top:1px solid rgba(251,248,240,0.14);
+  }
+  .user-chip{display:flex;align-items:center;gap:9px;margin-bottom:12px;}
+  .user-avatar{
+    width:30px;height:30px;border-radius:50%;
+    background:var(--brass);
+    color:var(--maroon-deep);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:12.5px;flex-shrink:0;
+  }
+  .user-meta{line-height:1.25;}
+  .user-meta .name{font-size:13px;font-weight:600;}
+  .user-meta .role{font-size:11px;color:var(--brass-soft);}
+  .logout-link{
+    background:none;border:none;
+    color:rgba(251,248,240,0.65);
+    font-size:12px;
+    padding:0;
+    text-decoration:underline;
+    text-underline-offset:2px;
+  }
+
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .topbar{
+    background:var(--ivory);
+    border-bottom:1px solid var(--line);
+    padding:18px 32px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .topbar h1{font-size:21px;}
+  .topbar .sub{color:var(--ink-soft);font-size:13px;margin-top:3px;}
+  .content{padding:28px 32px 60px;max-width:1180px;}
+
+  /* ---------- Filters ---------- */
+  .filter-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:flex-end;
+    margin-bottom:24px;
+    padding:16px 18px;
+    background:var(--ivory);
+    border:1px solid var(--line);
+  }
+  .chip-group{display:flex;flex-wrap:wrap;gap:7px;}
+  .chip{
+    padding:7px 13px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink-soft);
+    font-size:12.8px;
+    font-weight:600;
+    border-radius:16px;
+  }
+  .chip.active{
+    background:var(--maroon-deep);
+    border-color:var(--maroon-deep);
+    color:var(--ivory);
+  }
+  .filter-field{display:flex;flex-direction:column;gap:5px;}
+  .filter-field label{font-size:11.5px;font-weight:600;color:var(--maroon-deep);}
+  .filter-field input, .filter-field select{
+    padding:8px 10px;
+    border:1px solid var(--line);
+    background:#fff;
+    font-size:13px;
+    min-width:150px;
+  }
+
+  /* ---------- Facility grid ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:16px;
+  }
+  .fac-card{
+    background:var(--ivory);
+    border:1px solid var(--line);
+    padding:18px 18px 16px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+  .fac-card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;
+    width:3px;height:100%;
+    background:var(--maroon-soft);
+  }
+  .fac-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;}
+  .fac-icon{
+    width:34px;height:34px;
+    border:1px solid var(--brass-soft);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    color:var(--maroon-deep);
+  }
+  .fac-name{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:2px;}
+  .fac-cat{font-size:11.5px;color:var(--brass);font-weight:600;}
+  .fac-meta{font-size:12.5px;color:var(--ink-soft);margin:10px 0 14px;display:flex;gap:14px;}
+  .status-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-size:11.5px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:11px;
+    margin-bottom:12px;
+    width:fit-content;
+  }
+  .status-badge::before{content:"";width:6px;height:6px;border-radius:50%;}
+  .status-available{background:var(--sage-bg);color:var(--sage);}
+  .status-available::before{background:var(--sage);}
+  .status-booked{background:var(--rust-bg);color:var(--rust);}
+  .status-booked::before{background:var(--rust);}
+  .status-pending{background:var(--amber-bg);color:var(--amber);}
+  .status-pending::before{background:var(--amber);}
+  .fac-card .btn-book{
+    margin-top:auto;
+    padding:9px;
+    background:#fff;
+    border:1px solid var(--maroon-deep);
+    color:var(--maroon-deep);
+    font-size:13px;
+    font-weight:600;
+  }
+  .fac-card .btn-book:hover{background:var(--maroon-deep);color:var(--ivory);}
+  .fac-card .btn-book:disabled{
+    border-color:var(--line);
+    color:var(--ink-soft);
+    background:var(--cream);
+    cursor:not-allowed;
+  }
+
+  /* ---------- Tables ---------- */
+  .table-wrap{
+    background:var(--ivory);
+    border:1px solid var(--line);
+    overflow-x:auto;
+  }
+  table{width:100%;border-collapse:collapse;min-width:640px;}
+  thead th{
+    text-align:left;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--maroon-deep);
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    padding:12px 16px;
+    border-bottom:1.5px solid var(--maroon-deep);
+    background:#fff;
+  }
+  tbody td{
+    padding:12px 16px;
+    font-size:13.3px;
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+    vertical-align:middle;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:rgba(110,31,39,0.03);}
+  .cell-sub{color:var(--ink-soft);font-size:11.8px;margin-top:2px;}
+  .tag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:10px;
+  }
+  .tag-pending{background:var(--amber-bg);color:var(--amber);}
+  .tag-approved{background:var(--sage-bg);color:var(--sage);}
+  .tag-rejected{background:var(--rust-bg);color:var(--rust);}
+  .row-actions{display:flex;gap:8px;}
+  .btn-tiny{
+    padding:6px 12px;
+    font-size:12px;
+    font-weight:600;
+    border:1px solid;
+    background:#fff;
+  }
+  .btn-approve{border-color:var(--sage);color:var(--sage);}
+  .btn-approve:hover{background:var(--sage);color:#fff;}
+  .btn-reject{border-color:var(--rust);color:var(--rust);}
+  .btn-reject:hover{background:var(--rust);color:#fff;}
+  .btn-withdraw{border-color:var(--ink-soft);color:var(--ink-soft);}
+  .btn-withdraw:hover{background:var(--ink-soft);color:#fff;}
+
+  .empty-state{
+    padding:48px 20px;
+    text-align:center;
+    color:var(--ink-soft);
+  }
+  .empty-state svg{opacity:0.5;margin-bottom:10px;}
+  .empty-state p{font-size:13.5px;}
+
+  .section-title{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .section-title h2{font-size:17.5px;}
+  .section-title .count{font-size:12.5px;color:var(--ink-soft);}
+  .section-block{margin-bottom:34px;}
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;
+    background:rgba(42,26,21,0.45);
+    display:none;
+    align-items:center;justify-content:center;
+    z-index:50;
+    padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:var(--ivory);
+    width:100%;max-width:440px;
+    border:1px solid var(--line);
+    position:relative;
+    max-height:90vh;
+    overflow-y:auto;
+  }
+  .modal::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--maroon-deep);}
+  .modal-head{padding:24px 24px 4px;}
+  .modal-head h2{font-size:19px;}
+  .modal-head .fac-cat{margin-top:4px;display:block;}
+  .modal-body{padding:18px 24px 24px;}
+  .modal-close{
+    position:absolute;top:14px;right:14px;
+    background:none;border:none;
+    width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink-soft);
+    font-size:18px;
+  }
+  .modal-close:hover{color:var(--maroon-deep);}
+  .modal-actions{display:flex;gap:10px;margin-top:18px;}
+  .btn-ghost{
+    flex:1;
+    padding:10px;
+    background:#fff;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    font-weight:600;
+    font-size:13.5px;
+  }
+  .btn-submit{
+    flex:2;
+    padding:10px;
+    background:var(--maroon-deep);
+    border:none;
+    color:var(--ivory);
+    font-weight:600;
+    font-size:13.5px;
+  }
+  .btn-submit:hover{background:var(--maroon);}
+  .toast{
+    position:fixed;
+    bottom:24px;right:24px;
+    background:var(--maroon-deep);
+    color:var(--ivory);
+    padding:13px 20px;
+    font-size:13.5px;
+    font-weight:500;
+    border-left:3px solid var(--brass);
+    box-shadow:0 4px 18px rgba(42,26,21,0.25);
+    z-index:60;
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  @media (max-width:860px){
+    #app.active{flex-direction:column;}
+    .sidebar{width:100%;flex-direction:row;align-items:center;padding:12px 16px;overflow-x:auto;}
+    .brand{border-bottom:none;margin-bottom:0;padding:0 14px 0 0;border-right:1px solid rgba(251,248,240,0.14);}
+    .nav-group{display:flex;padding:0 4px;margin-bottom:0;}
+    .nav-item{white-space:nowrap;border-left:none;border-bottom:2px solid transparent;}
+    .nav-item.active{border-left:none;border-bottom-color:var(--brass-soft);}
+    .sidebar-foot{margin-top:0;margin-left:auto;padding:0 0 0 14px;border-top:none;border-left:1px solid rgba(251,248,240,0.14);display:flex;align-items:center;}
+    .user-chip{margin-bottom:0;}
+    .content{padding:22px 18px 50px;}
+    .topbar{padding:16px 18px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="seal"><span>PB</span></div>
+    <h1>College Facility Booking System</h1>
+    <p class="login-sub">Facility Booking &amp; Management System</p>
+
+    <div class="field">
+      <label>Full name</label>
+      <input type="text" id="loginName" placeholder="e.g. Arun Kumar" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label>Department</label>
+      <input type="text" id="loginDept" placeholder="e.g. Computer Engineering" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label>Sign in as</label>
+      <div class="role-toggle" id="roleToggle">
+        <button type="button" class="active" data-role="requester">Student / Faculty</button>
+        <button type="button" data-role="admin">Facility Admin</button>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="loginBtn">Continue to dashboard</button>
+    <p class="login-note">Demo login — no password required for this preview build.</p>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="seal"><span>PB</span></div>
+      <div class="brand-name">College Facility Booking System</div>
+    </div>
+
+    <nav class="nav-group">
+      <button class="nav-item active" data-view="facilities">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="1"></rect><path d="M3 9h18M8 4v5"></path></svg>
+        Facilities
+      </button>
+      <button class="nav-item" data-view="mybookings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"></path><path d="M8 2v4M16 2v4M4 10h16"></path></svg>
+        My bookings
+      </button>
+      <button class="nav-item" data-view="admin" id="navAdmin" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3 8-8"></path><path d="M21 12a9 9 0 1 1-5.4-8.2"></path></svg>
+        Approvals
+        <span class="nav-badge" id="pendingCount">0</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="user-chip">
+        <div class="user-avatar" id="userInitial">A</div>
+        <div class="user-meta">
+          <div class="name" id="userNameLabel">—</div>
+          <div class="role" id="userRoleLabel">—</div>
+        </div>
+      </div>
+      <button class="logout-link" id="logoutBtn">Sign out</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="viewTitle">Facilities</h1>
+        <div class="sub" id="viewSub">Check availability and submit a booking request.</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ---- FACILITIES VIEW ---- -->
+      <div id="view-facilities">
+        <div class="filter-row">
+          <div class="filter-field" style="min-width:220px;">
+            <label>Category</label>
+            <div class="chip-group" id="categoryChips">
+              <button class="chip active" data-cat="all">All</button>
+              <button class="chip" data-cat="Seminar Hall">Seminar Hall</button>
+              <button class="chip" data-cat="Lab">Lab</button>
+              <button class="chip" data-cat="Auditorium">Auditorium</button>
+              <button class="chip" data-cat="Classroom">Classroom</button>
+            </div>
+          </div>
+          <div class="filter-field">
+            <label>Date</label>
+            <input type="date" id="filterDate">
+          </div>
+          <div class="filter-field">
+            <label>Time slot</label>
+            <select id="filterSlot"></select>
+          </div>
+        </div>
+
+        <div class="grid" id="facilityGrid"></div>
+      </div>
+
+      <!-- ---- MY BOOKINGS VIEW ---- -->
+      <div id="view-mybookings" style="display:none;">
+        <div class="section-block">
+          <div class="section-title">
+            <h2>Booking history</h2>
+            <span class="count" id="myBookingsCount">0 requests</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Facility</th><th>Date &amp; slot</th><th>Purpose</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody id="myBookingsBody"></tbody>
+            </table>
+            <div class="empty-state" id="myBookingsEmpty" style="display:none;">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4z"></path><path d="M8 2v4M16 2v4M4 10h16"></path></svg>
+              <p>No booking requests yet. Head to Facilities to reserve a space.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- ADMIN VIEW ---- -->
+      <div id="view-admin" style="display:none;">
+        <div class="section-block">
+          <div class="section-title">
+            <h2>Pending approvals</h2>
+            <span class="count" id="pendingReqCount">0 waiting</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Requested by</th><th>Facility</th><th>Date &amp; slot</th><th>Purpose</th><th>Action</th></tr>
+              </thead>
+              <tbody id="pendingBody"></tbody>
+            </table>
+            <div class="empty-state" id="pendingEmpty" style="display:none;">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3 8-8"></path><path d="M21 12a9 9 0 1 1-5.4-8.2"></path></svg>
+              <p>No requests are waiting on your review.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">
+            <h2>All bookings — full log</h2>
+            <span class="count" id="allBookingsCount">0 total</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Requested by</th><th>Facility</th><th>Date &amp; slot</th><th>Status</th></tr>
+              </thead>
+              <tbody id="allBookingsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ---- BOOKING MODAL ---- -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal">
+    <button class="modal-close" id="closeModal">&times;</button>
+    <div class="modal-head">
+      <h2 id="modalFacName">Facility name</h2>
+      <span class="fac-cat" id="modalFacCat">Category</span>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="modalDate">
+      </div>
+      <div class="field">
+        <label>Time slot</label>
+        <select id="modalSlot"></select>
+      </div>
+      <div class="field">
+        <label>Purpose of booking</label>
+        <input type="text" id="modalPurpose" placeholder="e.g. Departmental review meeting">
+      </div>
+      <div class="field">
+        <label>Expected attendees</label>
+        <input type="number" id="modalAttendees" min="1" placeholder="e.g. 40">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="cancelBooking">Cancel</button>
+        <button class="btn-submit" id="submitBooking">Submit request</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Notice</div>
+
+<script>
+/* =========================================================================
+   PolyBook — Cloud Based Poly Facility Booking and Management System
+   FRONT END ONLY. Data lives in memory for this preview.
+
+   The classes below (User, Facility, BookingRequest, FacilityBookingService)
+   mirror the shape of the eventual REST resources. When the backend is
+   deployed on Render, only FacilityBookingService's method bodies need to
+   change from "read/write local arrays" to "fetch() the live API" — every
+   screen in this file already talks to the service through async calls,
+   so the UI itself will not need to change.
+   ========================================================================= */
+
+// const API_BASE = "https://polybook-api.onrender.com/api"; // set when backend is live
+
+class User {
+  constructor(id, name, department, role) {
+    this.id = id;
+    this.name = name;
+    this.department = department || "—";
+    this.role = role; // 'requester' | 'admin'
+  }
+}
+
+class Facility {
+  constructor(id, name, category, capacity, location) {
+    this.id = id;
+    this.name = name;
+    this.category = category;
+    this.capacity = capacity;
+    this.location = location;
+  }
+}
+
+class BookingRequest {
+  constructor(id, facilityId, user, date, slot, purpose, attendees) {
+    this.id = id;
+    this.facilityId = facilityId;
+    this.userId = user.id;
+    this.userName = user.name;
+    this.userDept = user.department;
+    this.date = date;
+    this.slot = slot;
+    this.purpose = purpose;
+    this.attendees = attendees;
+    this.status = "pending"; // 'pending' | 'approved' | 'rejected'
+    this.createdAt = new Date().toISOString();
+  }
+}
+
+/**
+ * FacilityBookingService
+ * Every method returns a Promise so this can be swapped for real HTTP
+ * calls (e.g. fetch(`${API_BASE}/bookings`)) without touching the UI code
+ * that calls it.
+ */
+class FacilityBookingService {
+  constructor() {
+    this.facilities = [
+      new Facility(1, "Seminar Hall A", "Seminar Hall", 80, "Block C · 1st Floor"),
+      new Facility(2, "Seminar Hall B", "Seminar Hall", 60, "Block A · 2nd Floor"),
+      new Facility(3, "Computer Lab 1", "Lab", 40, "Block B · Ground Floor"),
+      new Facility(4, "Electronics Lab", "Lab", 35, "Block B · 1st Floor"),
+      new Facility(5, "Physics Lab", "Lab", 30, "Block B · 2nd Floor"),
+      new Facility(6, "Main Auditorium", "Auditorium", 500, "Block D · Ground Floor"),
+      new Facility(7, "Classroom 101", "Classroom", 60, "Block A · Ground Floor"),
+      new Facility(8, "Classroom 204", "Classroom", 55, "Block A · 2nd Floor"),
+    ];
+    this.bookings = [];
+    this._nextId = 1;
+  }
+
+  getSlots() {
+    return ["09:00–10:00","10:00–11:00","11:00–12:00","12:00–13:00","14:00–15:00","15:00–16:00","16:00–17:00"];
+  }
+
+  async getFacilities(category) {
+    // TODO(backend): return fetch(`${API_BASE}/facilities?category=${category}`).then(r => r.json());
+    if (!category || category === "all") return [...this.facilities];
+    return this.facilities.filter(f => f.category === category);
+  }
+
+  async getAvailability(facilityId, date, slot) {
+    // TODO(backend): GET `${API_BASE}/facilities/${facilityId}/availability?date=&slot=`
+    if (!date || !slot) return "unknown";
+    const match = this.bookings.filter(b => b.facilityId === facilityId && b.date === date && b.slot === slot);
+    if (match.some(b => b.status === "approved")) return "booked";
+    if (match.some(b => b.status === "pending")) return "pending";
+    return "available";
+  }
+
+  async submitBooking({ facilityId, user, date, slot, purpose, attendees }) {
+    // TODO(backend): POST `${API_BASE}/bookings`
+    const req = new BookingRequest(this._nextId++, facilityId, user, date, slot, purpose, attendees);
+    this.bookings.push(req);
+    return req;
+  }
+
+  async withdrawBooking(id) {
+    // TODO(backend): DELETE `${API_BASE}/bookings/${id}`
+    const b = this.bookings.find(x => x.id === id);
+    if (b && b.status === "pending") b.status = "withdrawn";
+    return b;
+  }
+
+  async getBookingsForUser(userId) {
+    // TODO(backend): GET `${API_BASE}/bookings?user=${userId}`
+    return this.bookings.filter(b => b.userId === userId).sort((a,b) => b.id - a.id);
+  }
+
+  async getPendingBookings() {
+    // TODO(backend): GET `${API_BASE}/bookings?status=pending`
+    return this.bookings.filter(b => b.status === "pending").sort((a,b) => a.id - b.id);
+  }
+
+  async getAllBookings() {
+    // TODO(backend): GET `${API_BASE}/bookings`
+    return [...this.bookings].sort((a,b) => b.id - a.id);
+  }
+
+  async approveBooking(id) {
+    // TODO(backend): PATCH `${API_BASE}/bookings/${id}` { status: 'approved' }
+    const b = this.bookings.find(x => x.id === id);
+    if (b) b.status = "approved";
+    return b;
+  }
+
+  async rejectBooking(id) {
+    // TODO(backend): PATCH `${API_BASE}/bookings/${id}` { status: 'rejected' }
+    const b = this.bookings.find(x => x.id === id);
+    if (b) b.status = "rejected";
+    return b;
+  }
+
+  facilityById(id) {
+    return this.facilities.find(f => f.id === id);
+  }
+}
+
+/* ============================= UI CONTROLLER ============================= */
+
+class PolyBookApp {
+  constructor() {
+    this.service = new FacilityBookingService();
+    this.currentUser = null;
+    this.activeCategory = "all";
+    this.activeView = "facilities";
+    this.activeFacility = null;
+    this._userSeq = 1;
+
+    this.icons = {
+      "Seminar Hall": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="13" width="18" height="7" rx="1"></rect><path d="M7 13V9a5 5 0 0 1 10 0v4"></path></svg>',
+      "Lab": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 2v6L4 19a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3L15 8V2"></path><path d="M9 2h6M6 15h12"></path></svg>',
+      "Auditorium": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 6h18M3 12h18M3 18h18"></path><path d="M7 6v12M17 6v12"></path></svg>',
+      "Classroom": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="12" rx="1"></rect><path d="M9 20h6M12 16v4"></path></svg>'
+    };
+
+    this._bindLogin();
+    this._bindApp();
+    this._populateSlotSelects();
+    this._setDefaultDates();
+  }
+
+  toast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+  }
+
+  _populateSlotSelects() {
+    const slots = this.service.getSlots();
+    const filterSlot = document.getElementById("filterSlot");
+    const modalSlot = document.getElementById("modalSlot");
+    filterSlot.innerHTML = '<option value="">Any slot</option>' + slots.map(s => `<option value="${s}">${s}</option>`).join("");
+    modalSlot.innerHTML = slots.map(s => `<option value="${s}">${s}</option>`).join("");
+  }
+
+  _setDefaultDates() {
+    const today = new Date().toISOString().slice(0,10);
+    document.getElementById("filterDate").value = today;
+    document.getElementById("filterDate").min = today;
+    document.getElementById("modalDate").min = today;
+  }
+
+  /* ---------- Login ---------- */
+  _bindLogin() {
+    const toggle = document.getElementById("roleToggle");
+    let selectedRole = "requester";
+    toggle.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        toggle.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedRole = btn.dataset.role;
+      });
+    });
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const name = document.getElementById("loginName").value.trim();
+      const dept = document.getElementById("loginDept").value.trim();
+      if (!name) {
+        document.getElementById("loginName").focus();
+        return;
+      }
+      this.currentUser = new User(this._userSeq++, name, dept, selectedRole);
+      this._enterApp();
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      this.currentUser = null;
+      document.getElementById("app").classList.remove("active");
+      document.getElementById("loginScreen").style.display = "flex";
+      document.getElementById("loginName").value = "";
+      document.getElementById("loginDept").value = "";
+    });
+  }
+
+  _enterApp() {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("app").classList.add("active");
+
+    const isAdmin = this.currentUser.role === "admin";
+    document.getElementById("navAdmin").style.display = isAdmin ? "flex" : "none";
+    document.getElementById("userInitial").textContent = this.currentUser.name.charAt(0).toUpperCase();
+    document.getElementById("userNameLabel").textContent = this.currentUser.name;
+    document.getElementById("userRoleLabel").textContent = isAdmin ? "Facility Admin" : (this.currentUser.department || "Student / Faculty");
+
+    this.setView(isAdmin ? "admin" : "facilities");
+  }
+
+  /* ---------- View switching ---------- */
+  _bindApp() {
+    document.querySelectorAll(".nav-item").forEach(btn => {
+      btn.addEventListener("click", () => this.setView(btn.dataset.view));
+    });
+
+    document.querySelectorAll("#categoryChips .chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll("#categoryChips .chip").forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+        this.activeCategory = chip.dataset.cat;
+        this.renderFacilities();
+      });
+    });
+
+    document.getElementById("filterDate").addEventListener("change", () => this.renderFacilities());
+    document.getElementById("filterSlot").addEventListener("change", () => this.renderFacilities());
+
+    document.getElementById("closeModal").addEventListener("click", () => this._closeModal());
+    document.getElementById("cancelBooking").addEventListener("click", () => this._closeModal());
+    document.getElementById("bookingModal").addEventListener("click", (e) => {
+      if (e.target.id === "bookingModal") this._closeModal();
+    });
+    document.getElementById("submitBooking").addEventListener("click", () => this._submitBooking());
+  }
+
+  async setView(view) {
+    this.activeView = view;
+    document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+    ["facilities","mybookings","admin"].forEach(v => {
+      document.getElementById("view-" + v).style.display = v === view ? "block" : "none";
+    });
+
+    const titles = {
+      facilities: ["Facilities", "Check availability and submit a booking request."],
+      mybookings: ["My bookings", "Track the status of every request you've submitted."],
+      admin: ["Approvals", "Review pending requests and oversee all bookings."]
+    };
+    document.getElementById("viewTitle").textContent = titles[view][0];
+    document.getElementById("viewSub").textContent = titles[view][1];
+
+    if (view === "facilities") await this.renderFacilities();
+    if (view === "mybookings") await this.renderMyBookings();
+    if (view === "admin") await this.renderAdmin();
+
+    await this._refreshPendingBadge();
+  }
+
+  async _refreshPendingBadge() {
+    const pending = await this.service.getPendingBookings();
+    document.getElementById("pendingCount").textContent = pending.length;
+  }
+
+  /* ---------- Facilities ---------- */
+  async renderFacilities() {
+    const date = document.getElementById("filterDate").value;
+    const slot = document.getElementById("filterSlot").value;
+    const facilities = await this.service.getFacilities(this.activeCategory);
+    const grid = document.getElementById("facilityGrid");
+    grid.innerHTML = "";
+
+    for (const f of facilities) {
+      const availability = await this.service.getAvailability(f.id, date, slot);
+      const card = document.createElement("div");
+      card.className = "fac-card";
+
+      const badgeMap = {
+        available: ["status-available", "Available"],
+        booked: ["status-booked", "Booked"],
+        pending: ["status-pending", "Requested — awaiting approval"],
+        unknown: [null, null]
+      };
+      const [badgeClass, badgeLabel] = badgeMap[availability];
+
+      card.innerHTML = `
+        <div class="fac-top">
+          <div>
+            <div class="fac-name">${f.name}</div>
+            <div class="fac-cat">${f.category}</div>
+          </div>
+          <div class="fac-icon">${this.icons[f.category] || ""}</div>
+        </div>
+        <div class="fac-meta">
+          <span>Capacity ${f.capacity}</span>
+          <span>${f.location}</span>
+        </div>
+        ${badgeLabel ? `<span class="status-badge ${badgeClass}">${badgeLabel}</span>` : `<span class="status-badge" style="background:var(--cream);color:var(--ink-soft);">Pick a date &amp; slot</span>`}
+        <button class="btn-book" ${availability === "booked" ? "disabled" : ""}>${availability === "booked" ? "Fully booked" : "Request booking"}</button>
+      `;
+
+      card.querySelector(".btn-book").addEventListener("click", () => this._openModal(f));
+      grid.appendChild(card);
+    }
+
+    if (facilities.length === 0) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">No facilities found in this category.</div>`;
+    }
+  }
+
+  /* ---------- Booking modal ---------- */
+  _openModal(facility) {
+    this.activeFacility = facility;
+    document.getElementById("modalFacName").textContent = facility.name;
+    document.getElementById("modalFacCat").textContent = `${facility.category} · Capacity ${facility.capacity} · ${facility.location}`;
+    document.getElementById("modalDate").value = document.getElementById("filterDate").value || "";
+    document.getElementById("modalSlot").value = document.getElementById("filterSlot").value || this.service.getSlots()[0];
+    document.getElementById("modalPurpose").value = "";
+    document.getElementById("modalAttendees").value = "";
+    document.getElementById("bookingModal").classList.add("open");
+  }
+
+  _closeModal() {
+    document.getElementById("bookingModal").classList.remove("open");
+    this.activeFacility = null;
+  }
+
+  async _submitBooking() {
+    const date = document.getElementById("modalDate").value;
+    const slot = document.getElementById("modalSlot").value;
+    const purpose = document.getElementById("modalPurpose").value.trim();
+    const attendees = document.getElementById("modalAttendees").value;
+
+    if (!date || !slot || !purpose) {
+      this.toast("Please fill in date, slot and purpose.");
+      return;
+    }
+
+    await this.service.submitBooking({
+      facilityId: this.activeFacility.id,
+      user: this.currentUser,
+      date, slot, purpose,
+      attendees: attendees || "—"
+    });
+
+    this._closeModal();
+    this.toast("Booking request submitted for review.");
+    await this.renderFacilities();
+    await this._refreshPendingBadge();
+  }
+
+  /* ---------- My bookings ---------- */
+  async renderMyBookings() {
+    const rows = await this.service.getBookingsForUser(this.currentUser.id);
+    const body = document.getElementById("myBookingsBody");
+    const empty = document.getElementById("myBookingsEmpty");
+    body.innerHTML = "";
+    document.getElementById("myBookingsCount").textContent = `${rows.length} request${rows.length === 1 ? "" : "s"}`;
+
+    if (rows.length === 0) {
+      empty.style.display = "block";
+      return;
+    }
+    empty.style.display = "none";
+
+    const tagClass = { pending: "tag-pending", approved: "tag-approved", rejected: "tag-rejected", withdrawn: "tag-rejected" };
+    const tagLabel = { pending: "Pending", approved: "Approved", rejected: "Rejected", withdrawn: "Withdrawn" };
+
+    for (const b of rows) {
+      const f = this.service.facilityById(b.facilityId);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><strong>${f.name}</strong><div class="cell-sub">${f.category}</div></td>
+        <td>${b.date}<div class="cell-sub">${b.slot}</div></td>
+        <td>${b.purpose}</td>
+        <td><span class="tag ${tagClass[b.status]}">${tagLabel[b.status]}</span></td>
+        <td>${b.status === "pending" ? `<button class="btn-tiny btn-withdraw" data-id="${b.id}">Withdraw</button>` : ""}</td>
+      `;
+      body.appendChild(tr);
+    }
+
+    body.querySelectorAll(".btn-withdraw").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        await this.service.withdrawBooking(Number(btn.dataset.id));
+        this.toast("Booking request withdrawn.");
+        await this.renderMyBookings();
+        await this.renderFacilities();
+        await this._refreshPendingBadge();
+      });
+    });
+  }
+
+  /* ---------- Admin ---------- */
+  async renderAdmin() {
+    const pending = await this.service.getPendingBookings();
+    const pendBody = document.getElementById("pendingBody");
+    const pendEmpty = document.getElementById("pendingEmpty");
+    pendBody.innerHTML = "";
+    document.getElementById("pendingReqCount").textContent = `${pending.length} waiting`;
+
+    if (pending.length === 0) {
+      pendEmpty.style.display = "block";
+    } else {
+      pendEmpty.style.display = "none";
+      for (const b of pending) {
+        const f = this.service.facilityById(b.facilityId);
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${b.userName}</strong><div class="cell-sub">${b.userDept}</div></td>
+          <td>${f.name}<div class="cell-sub">${f.category}</div></td>
+          <td>${b.date}<div class="cell-sub">${b.slot}</div></td>
+          <td>${b.purpose}</td>
+          <td class="row-actions">
+            <button class="btn-tiny btn-approve" data-id="${b.id}" data-act="approve">Approve</button>
+            <button class="btn-tiny btn-reject" data-id="${b.id}" data-act="reject">Reject</button>
+          </td>
+        `;
+        pendBody.appendChild(tr);
+      }
+      pendBody.querySelectorAll("button[data-act]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = Number(btn.dataset.id);
+          if (btn.dataset.act === "approve") {
+            await this.service.approveBooking(id);
+            this.toast("Booking approved.");
+          } else {
+            await this.service.rejectBooking(id);
+            this.toast("Booking rejected.");
+          }
+          await this.renderAdmin();
+          await this._refreshPendingBadge();
+        });
+      });
+    }
+
+    const all = await this.service.getAllBookings();
+    const allBody = document.getElementById("allBookingsBody");
+    document.getElementById("allBookingsCount").textContent = `${all.length} total`;
+    allBody.innerHTML = "";
+    const tagClass = { pending: "tag-pending", approved: "tag-approved", rejected: "tag-rejected", withdrawn: "tag-rejected" };
+    const tagLabel = { pending: "Pending", approved: "Approved", rejected: "Rejected", withdrawn: "Withdrawn" };
+
+    for (const b of all) {
+      const f = this.service.facilityById(b.facilityId);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><strong>${b.userName}</strong><div class="cell-sub">${b.userDept}</div></td>
+        <td>${f.name}</td>
+        <td>${b.date}<div class="cell-sub">${b.slot}</div></td>
+        <td><span class="tag ${tagClass[b.status]}">${tagLabel[b.status]}</span></td>
+      `;
+      allBody.appendChild(tr);
+    }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  window.polyBook = new PolyBookApp();
+});
+</script>
+</body>
+</html>
