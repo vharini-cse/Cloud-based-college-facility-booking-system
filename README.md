@@ -2,10 +2,6 @@
 
 A web-based system that lets students and faculty book seminar halls, labs, auditoriums, and classrooms online, instead of checking availability manually. Users browse facilities, check real-time availability for a chosen date and time slot, and submit a booking request. Admins review, approve, or reject each request. This repository contains the **frontend** of the system.
 
-**Live demo:** [# PolyBook — Cloud Based Poly Facility Booking and Management System
-
-A web-based system that lets students and faculty book seminar halls, labs, auditoriums, and classrooms online, instead of checking availability manually. Users browse facilities, check real-time availability for a chosen date and time slot, and submit a booking request. Admins review, approve, or reject each request. This repository contains the **frontend** of the system.
-
 **Live demo:**https://cloud-based-college-facility-booking-l51s.onrender.com 
 
 ## Features
